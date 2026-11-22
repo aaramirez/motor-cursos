@@ -34,7 +34,7 @@ html = motor.pagina_html(cfg, paginas[0])
 - `extra_css` agrega los estilos propios del curso al final de `style.css`.
 - Un contenido escrito a mano en HTML se publica tal cual: `motor.separar_scripts` saca sus `<script>` para ponerlos después de `lab.js`.
 
-Generadores que lo usan: `telco-training/scripts/generar_curso.py` y `mate/fuente/generar.py`.
+Generadores que lo usan: `telco-source/scripts/generar_curso.py` y `mate-source/generar.py` (cada curso: fuente privada `<curso>-source` → sitio público `<curso>`).
 
 ## Reglas que el motor ya cumple
 
