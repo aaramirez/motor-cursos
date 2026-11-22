@@ -78,3 +78,12 @@ def test_para_saber_mas_no_anida_enlaces_de_rfc(tmp_path):
     html = motor.directiva(f, "para-saber-mas", {}, "- [RFC 5176: CoA](https://www.rfc-editor.org/rfc/rfc5176) · norma",
                            [])
     assert html.count("<a ") == 1 and "RFC 5176: CoA" in html
+
+
+def test_titulos_de_figura_y_encabezados_conservan_mayusculas_y_minusculas():
+    # f(x) y F(x), dBm y DBM, ŷ e Ŷ significan cosas distintas: el CSS no puede pasarlos a mayúsculas
+    import re
+    css = (Path(motor.__file__).parent / "assets" / "curso.css").read_text(encoding="utf-8")
+    for selector in (r"\.cap\{", r"\nth\{"):
+        regla = re.search(selector + r"[^}]*\}", css).group(0)
+        assert "uppercase" not in regla, regla
