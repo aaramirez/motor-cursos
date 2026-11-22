@@ -25,7 +25,8 @@ def _rfc(t: str) -> str:
     return _RFC.sub(enlazar, t)
 
 
-def _inline(texto: str) -> str:
+def _inline(texto: str, enlaces: bool = True) -> str:
+    """Código, enlaces, RFC, negrita y cursiva. Con enlaces=False (texto que ya va dentro de un <a>), sin enlaces."""
     codigos = []
 
     def guardar(m):
@@ -34,6 +35,10 @@ def _inline(texto: str) -> str:
 
     t = e(texto, quote=False)
     t = re.sub(r"`([^`]+)`", guardar, t)
+    if not enlaces:
+        t = re.sub(r"\*\*(.+?)\*\*", r"<b>\1</b>", t)
+        t = re.sub(r"(?<![\*\w])\*(?!\s)(.+?)(?<!\s)\*(?![\*\w])", r"<i>\1</i>", t)
+        return re.sub(r"\0(\d+)\0", lambda m: codigos[int(m.group(1))], t)
     t = re.sub(r"\[([^\]]+)\]\(([^)\s]+)\)",
                lambda m: f'<a href="{m.group(2)}" target="_blank" rel="noopener">{m.group(1)}</a>'
                if m.group(2).startswith("http") else f'<a href="{m.group(2)}">{m.group(1)}</a>', t)

@@ -71,9 +71,9 @@ def directiva(fuentes: Fuentes, nombre: str, attrs: dict, texto: str, scripts: l
         enlaces = []
         for l in texto.splitlines():
             if m := re.match(r"^- \[([^\]]+)\]\((\S+)\)(?:\s*·\s*(.+))?$", l):
-                nota = f" <small>{_inline(m.group(3))}</small>" if m.group(3) else ""
+                nota = f" <small>{_inline(m.group(3), enlaces=False)}</small>" if m.group(3) else ""
                 enlaces.append(f'<a class="vid" href="{m.group(2)}" target="_blank" rel="noopener">'
-                               f"{_inline(m.group(1))}{nota}</a>")
+                               f"{_inline(m.group(1), enlaces=False)}{nota}</a>")
         return '<div class="vids"><span>Para saber más</span>' + "".join(enlaces) + "</div>" if enlaces else ""
     if nombre == "practica":
         lineas = texto.splitlines() or [""]

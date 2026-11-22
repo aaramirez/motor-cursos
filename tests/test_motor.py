@@ -71,3 +71,10 @@ def test_assets_con_datos_del_curso_y_css_propio(tmp_path):
 def test_separar_scripts_de_html_a_mano():
     html, scripts = motor.separar_scripts("<section>A</section>\n<script>\nf()\n</script>")
     assert html == "<section>A</section>" and scripts == ["<script>\nf()\n</script>"]
+
+
+def test_para_saber_mas_no_anida_enlaces_de_rfc(tmp_path):
+    f = motor.Fuentes(figuras=tmp_path, labs=tmp_path)
+    html = motor.directiva(f, "para-saber-mas", {}, "- [RFC 5176: CoA](https://www.rfc-editor.org/rfc/rfc5176) · norma",
+                           [])
+    assert html.count("<a ") == 1 and "RFC 5176: CoA" in html
