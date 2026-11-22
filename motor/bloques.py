@@ -3,11 +3,16 @@
 Bloques: analogia, caso-real, en-la-practica (recuadros), diagrama (SVG incrustado), lab (fragmento HTML;
 sus <script> van al final de la página), pruebate, para-saber-mas, practica (terminal o navegador) e
 investiga. Los textos visibles de cada curso (rótulos de recuadros, «en el capítulo») salen de Textos.
+
+Libros de matemática: definicion, teorema, lema, proposicion, corolario, ejemplo y observacion (numerados,
+con id="…" para citarlos con [@id] y nombre="…"), demostracion (plegable; de="id" la une a su enunciado),
+ejercicio (numerado; nivel="1|2|3"), pista y solucion (plegables) y prompt (texto para copiar a una IA).
 """
 import re
 from dataclasses import dataclass, field
 from pathlib import Path
 
+from .matematica import ENUNCIADOS, Numeracion, marca_ejercicio, marca_enunciado, numerar, resolver_refs
 from .md import _inline, e, md_a_html
 
 _ABRE = re.compile(r"^:::([\w-]+)(.*)$")
@@ -80,6 +85,33 @@ def directiva(fuentes: Fuentes, nombre: str, attrs: dict, texto: str, scripts: l
         rotulo = PRACTICAS.get(attrs.get("donde", ""), "Práctica")
         return (f'<div class="practica"><div class="practica-title"><span class="tag">{rotulo}</span>'
                 f"<h3>{_inline(lineas[0])}</h3></div>{md_a_html(chr(10).join(lineas[1:]))}</div>")
+    if nombre in ENUNCIADOS or nombre == "ejercicio":
+        id_ = attrs.get("id", "")
+        titulo = _inline(attrs["nombre"]) if attrs.get("nombre") else ""
+        if nombre == "ejercicio":
+            clase, marca = "ejercicio", marca_ejercicio(id_)
+            nivel = attrs.get("nivel", "")
+            extra = (f' <span class="nivel" aria-label="Dificultad {nivel} de 3">{"★" * int(nivel)}'
+                     f'{"☆" * (3 - int(nivel))}</span>') if nivel in ("1", "2", "3") else ""
+        else:
+            clase, marca = f"enunciado enunciado-{nombre}", marca_enunciado(nombre, id_, titulo)
+            extra = f' <span class="nombre">({titulo})</span>' if titulo else ""
+        atr = f' id="{e(id_)}"' if id_ else ""
+        return f'<div class="{clase}"{atr}><p class="enunciado-t"><b>{marca}</b>{extra}</p>{md_a_html(texto)}</div>'
+    if nombre == "demostracion":
+        de = f" · \x03{attrs['de']}\x03" if attrs.get("de") else ""
+        abierta = " open" if "abierta" in attrs else ""
+        return (f'<details class="demostracion"{abierta}><summary>Demostración{de}</summary>{md_a_html(texto)}'
+                '<p class="qed" aria-hidden="true">∎</p></details>')
+    if nombre in ("pista", "solucion"):
+        rotulo = {"pista": "Pista", "solucion": "Solución"}[nombre]
+        return f'<details class="{nombre}"><summary>{rotulo}</summary>{md_a_html(texto)}</details>'
+    if nombre == "prompt":
+        lineas = texto.splitlines() or [""]
+        return (f'<div class="prompt"><div class="prompt-title"><span class="tag">Prompt para la IA</span>'
+                f"<h3>{_inline(lineas[0])}</h3></div><div class=\"code-copia\"><pre><code>"
+                f'{e(chr(10).join(lineas[1:]).strip(), quote=False)}</code></pre>'
+                '<button type="button" class="copiar copiar-todo">Copiar</button></div></div>')
     if nombre == "investiga":
         items = []
         for l in texto.splitlines():
@@ -106,8 +138,13 @@ def cuerpo(ruta: Path) -> list[str]:
 
 
 def render_cuerpo(fuentes: Fuentes, lineas: list[str], scripts: list | None = None,
-                  textos: Textos | None = None) -> str:
-    """Contenido de <main> (sin la cabecera): una <section> por cada ##, con prosa y bloques."""
+                  textos: Textos | None = None, num: Numeracion | None = None) -> str:
+    """Contenido de <main> (sin la cabecera): una <section> por cada ##, con prosa y bloques.
+
+    Numera enunciados, ejercicios y ecuaciones. Sin num, la numeración es de la página («Teorema 1») y las
+    referencias [@id] se resuelven aquí. Con num (un libro con capítulos), los números salen «3.1» y las
+    referencias quedan pendientes: el generador llama a resolver_refs() cuando ya numeró todos los capítulos.
+    """
     scripts = [] if scripts is None else scripts
     secciones, actual, texto = [], {"h2": None, "partes": []}, []
 
@@ -145,7 +182,11 @@ def render_cuerpo(fuentes: Fuentes, lineas: list[str], scripts: list | None = No
             continue
         h2 = f"<h2>{_inline(s['h2'])}</h2>" if s["h2"] else ""
         salida.append(f"<section>{h2}{partes}</section>")
-    return "\n".join(salida)
+    html_ = "\n".join(salida)
+    if num is not None:
+        return numerar(html_, num)
+    local = Numeracion()
+    return resolver_refs(numerar(html_, local), local.refs)
 
 
 def separar_scripts(html_: str) -> tuple[str, list[str]]:

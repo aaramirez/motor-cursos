@@ -5,15 +5,24 @@ Lo que comparten los cursos visuales e interactivos: [Cómo funciona un telco](h
 ## Qué trae
 
 ```
-motor/md.py          Markdown mínimo: párrafos, listas, tablas, enlaces, énfasis, enlaces a los RFC y bloques
-                     de código con pestañas por sistema operativo y botón «Copiar» en cada línea
+motor/md.py          Markdown mínimo: párrafos, listas, tablas, enlaces, énfasis, enlaces a los RFC, fórmulas
+                     $…$ y $$…$$, referencias [@id] y bloques de código con pestañas por sistema operativo
+                     y botón «Copiar» en cada línea
 motor/bloques.py     Bloques ::: (analogia, caso-real, en-la-practica, diagrama, lab, pruebate,
-                     para-saber-mas, practica, investiga) y el cuerpo de una página por secciones ##
-motor/sitio.py       Curso y Pagina, plantillas de página y portada, etapas desplegables, navegación
+                     para-saber-mas, practica, investiga; y para matemática: definicion, teorema, lema,
+                     proposicion, corolario, ejemplo, observacion, demostracion, ejercicio, pista,
+                     solucion, prompt) y el cuerpo de una página por secciones ##
+motor/matematica.py  Numeración de enunciados, ejercicios y ecuaciones por capítulo, referencias cruzadas
+                     entre capítulos e índice de enunciados
+motor/sitio.py       Curso y Pagina, plantillas de página y portada, etapas desplegables, navegación;
+                     KaTeX solo en las páginas con fórmulas
 motor/plantillas/    pagina.html y portada.html (con Google Tag Manager GTM-KX76XF8R)
 motor/assets/        curso.css y lab.js: se copian a cada curso como assets/style.css y assets/lab.js
+docs/                libro-de-matematicas.md: estructura de un libro y de un capítulo de matemática
 tests/               pytest
 ```
+
+Para un libro de matemática, lee [docs/libro-de-matematicas.md](docs/libro-de-matematicas.md).
 
 ## Cómo lo usa un curso
 

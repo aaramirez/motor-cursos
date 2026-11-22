@@ -25,16 +25,25 @@ def _rfc(t: str) -> str:
     return _RFC.sub(enlazar, t)
 
 
+# Fórmula en línea: $…$ pegado al texto por dentro y sin letras ni $ por fuera («$5 y $10» no es fórmula)
+_MATH = re.compile(r"(?<![\w$\\])\$(?=\S)([^$\n]+?)(?<=\S)\$(?![\w$])")
+_REF = re.compile(r"\[@([\w:.-]+)\]")
+
+
 def _inline(texto: str, enlaces: bool = True) -> str:
-    """Código, enlaces, RFC, negrita y cursiva. Con enlaces=False (texto que ya va dentro de un <a>), sin enlaces."""
+    """Código, fórmulas $…$, referencias [@id], enlaces, RFC, negrita y cursiva. Con enlaces=False (texto que
+    ya va dentro de un <a>), sin enlaces."""
     codigos = []
 
-    def guardar(m):
-        codigos.append(f"<code>{m.group(1)}</code>")
+    def apartar(html_):
+        codigos.append(html_)
         return f"\0{len(codigos) - 1}\0"
 
     t = e(texto, quote=False)
-    t = re.sub(r"`([^`]+)`", guardar, t)
+    t = re.sub(r"`([^`]+)`", lambda m: apartar(f"<code>{m.group(1)}</code>"), t)
+    t = t.replace("\\$", apartar("$"))
+    t = _MATH.sub(lambda m: apartar(f'<span class="math">{m.group(1)}</span>'), t)
+    t = _REF.sub(lambda m: apartar(f"\x03{m.group(1)}\x03"), t)
     if not enlaces:
         t = re.sub(r"\*\*(.+?)\*\*", r"<b>\1</b>", t)
         t = re.sub(r"(?<![\*\w])\*(?!\s)(.+?)(?<!\s)\*(?![\*\w])", r"<i>\1</i>", t)
@@ -133,6 +142,17 @@ def md_a_html(texto: str) -> str:
         return f"\n\n\x01{len(codigos) - 1}\x01\n\n"
 
     texto = re.sub(r"^```([^\n]*)\n(.*?)\n```[ \t]*$", guardar, texto, flags=re.S | re.M)
+
+    def formula(m):
+        tex, id_ = m.group(1).strip(), m.group(2)
+        marca = f"\x02ecuacion|{id_}\x02" if id_ else ""
+        atr = f' id="{e(id_)}"' if id_ else ""
+        codigos.append(f'<div class="math-display"{atr}>{e(tex, quote=False)}{marca}</div>')
+        return f"\n\n\x01{len(codigos) - 1}\x01\n\n"
+
+    etiqueta = r"(?:[ \t]*\{#([\w:.-]+)\})?[ \t]*$"
+    texto = re.sub(r"^\$\$[ \t]*\n(.*?)\n[ \t]*\$\$" + etiqueta, formula, texto, flags=re.S | re.M)
+    texto = re.sub(r"\$\$(?=\S)([^$\n]+?)\$\$" + etiqueta, formula, texto, flags=re.M)
     salida = []
     for bloque in re.split(r"\n\s*\n", texto.strip()):
         lineas = [l for l in bloque.splitlines() if l.strip()]

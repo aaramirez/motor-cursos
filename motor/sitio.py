@@ -10,6 +10,14 @@ AQUI = Path(__file__).resolve().parent
 PLANTILLAS = AQUI / "plantillas"
 ASSETS = AQUI / "assets"
 MARCAR = '<label class="got"><input type="checkbox" id="got"> Lo tengo claro</label>\n'
+# KaTeX dibuja las fórmulas ($…$ y $$…$$); solo se carga en las páginas que tienen alguna
+_KATEX = "https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.11/"
+KATEX = (f'<link rel="stylesheet" href="{_KATEX}katex.min.css" '
+         'integrity="sha384-nB0miv6/jRmo5UMMR1wu3Gz6NLsoTkbqJghGIsx//Rlm+ZU03BU6SQNC66uf4l5+" '
+         'crossorigin="anonymous" referrerpolicy="no-referrer">\n'
+         f'<script defer src="{_KATEX}katex.min.js" '
+         'integrity="sha384-7zkQWkzuo3B5mTepMUcHkMB5jZaolc2xDwL6VFqjFALcbeS9Ggm/Yr2r3Dy4lfFg" '
+         'crossorigin="anonymous" referrerpolicy="no-referrer"></script>\n')
 
 
 @dataclass
@@ -66,6 +74,8 @@ def cabecera(p: Pagina) -> str:
 
 def pagina_html(curso: Curso, p: Pagina) -> str:
     t = _comunes(curso, _plantilla("pagina.html"))
+    con_formulas = re.search(r'class="math(?:-display)?"', p.contenido + p.lede + p.titulo)
+    t = t.replace("{{CABEZA}}", KATEX if con_formulas else "")
     return (t.replace("{{TITULO_PAGINA}}", p.titulo_pagina or p.corto).replace("{{DESCRIPCION}}", p.descripcion)
             .replace("{{SIMBOLOS}}", p.simbolos + "\n" if p.simbolos else "").replace("{{SLUG}}", p.slug)
             .replace("{{CABECERA}}", cabecera(p)).replace("{{CONTENIDO}}", p.contenido)
