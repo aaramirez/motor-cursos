@@ -32,6 +32,7 @@ class Curso:
     aria_pager: str = "Capítulo anterior y siguiente"
     meta_extra: str = ""          # etiquetas <meta> adicionales
     extra_css: str = ""           # estilos propios del curso: se agregan al final de style.css
+    sitio: str = "https://aaramirez.github.io/"  # índice de todos los cursos (enlace de la barra superior)
 
 
 @dataclass
@@ -63,7 +64,7 @@ def _plantilla(nombre: str) -> str:
 def _comunes(curso: Curso, t: str) -> str:
     return (t.replace("{{NOMBRE}}", curso.nombre).replace("{{MARCA}}", curso.marca)
             .replace("{{EYEBROW}}", curso.eyebrow).replace("{{PIE}}", curso.pie)
-            .replace("{{ARIA_PAGER}}", curso.aria_pager)
+            .replace("{{ARIA_PAGER}}", curso.aria_pager).replace("{{SITIO}}", curso.sitio)
             .replace("{{META_EXTRA}}", curso.meta_extra + "\n" if curso.meta_extra else ""))
 
 

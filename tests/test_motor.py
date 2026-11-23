@@ -87,3 +87,11 @@ def test_titulos_de_figura_y_encabezados_conservan_mayusculas_y_minusculas():
     for selector in (r"\.cap\{", r"\nth\{"):
         regla = re.search(selector + r"[^}]*\}", css).group(0)
         assert "uppercase" not in regla, regla
+
+
+def test_enlace_al_indice_de_todos_los_cursos(tmp_path):
+    import motor
+    cfg = motor.Curso(salida=tmp_path, nombre="N", marca="M", eyebrow="E", pie="P", prefijo="x-")
+    p = motor.Pagina(slug="a", archivo="a", numero="01", corto="A", titulo="A")
+    for html in (motor.pagina_html(cfg, p), motor.portada_html(cfg, "", "", "", "d")):
+        assert 'class="al-sitio" href="https://aaramirez.github.io/"' in html and "{{SITIO}}" not in html
