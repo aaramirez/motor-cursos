@@ -15,6 +15,7 @@ motor/bloques.py     Bloques ::: (analogia, caso-real, en-la-practica, diagrama,
 motor/matematica.py  Numeración de enunciados, ejercicios y ecuaciones por capítulo, referencias cruzadas
                      entre capítulos e índice de enunciados
 motor/bookdown.py    Importa un libro bookdown (.Rmd) a borradores en el Markdown del motor (scripts/importar_bookdown.py)
+motor/temario.py     Cursos definidos por temario.yml: portada, tabla de contenido (temario.html) y capítulos
 motor/sitio.py       Curso y Pagina, plantillas de página y portada, etapas desplegables, navegación;
                      KaTeX solo en las páginas con fórmulas
 motor/plantillas/    pagina.html y portada.html (con Google Tag Manager GTM-KX76XF8R)
@@ -24,6 +25,16 @@ tests/               pytest
 ```
 
 Para un libro de matemática, lee [docs/libro-de-matematicas.md](docs/libro-de-matematicas.md).
+
+## Curso nuevo desde un temario
+
+Un curso nuevo se define con un `temario.yml`: la ficha (slug, nombre, marca, prefijo de `localStorage`…) y la tabla de contenido completa, con partes, capítulos, secciones, laboratorios y el patrón o idea de cada capítulo (formato en `motor/temario.py`).
+
+```
+python scripts/nuevo_curso.py ruta/temario.yml --github
+```
+
+Crea `../<slug>-source` (privado: `temario.yml`, `generar.py`, `CLAUDE.md`, `README.md`, `curso.css`) y `../<slug>` (público: portada con los capítulos «en preparación» y `temario.html`), hace el primer commit con el autor `soyalexanderramirez@gmail.com` y, con `--github`, crea los dos repos y activa GitHub Pages. Después cada capítulo se escribe en `capitulos/NN-slug.md` y `python generar.py` lo publica.
 
 ## Importar un libro bookdown
 
