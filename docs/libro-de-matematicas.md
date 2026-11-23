@@ -13,6 +13,10 @@ Los libros de matemática (Licenciatura, Maestría en Modelos Aleatorios y los q
 | Índice de enunciados | Página con todas las definiciones y resultados, por capítulo y con enlace (`motor.indice_enunciados`) |
 | Bibliografía | Las fuentes, incluido el libro de origen si lo hay. El texto del libro de origen nunca se copia: se reescribe completo |
 
+## Si el libro viene de bookdown
+
+`scripts/importar_bookdown.py` convierte los `.Rmd` en un borrador por capítulo dentro de `referencias/importado/` (privado). Úsalo para ver qué temas cubre el original y en qué orden, y después escribe cada capítulo de nuevo con la estructura de abajo: más explicación, ejemplos, laboratorios y ejercicios, y con los errores del original corregidos.
+
 ## El capítulo
 
 Cada capítulo sigue este orden. Las secciones `##` se pueden repetir: un capítulo largo tiene varias rondas de idea, enunciados y ejemplos.

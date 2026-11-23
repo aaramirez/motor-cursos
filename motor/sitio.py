@@ -85,6 +85,8 @@ def pagina_html(curso: Curso, p: Pagina) -> str:
 
 def portada_html(curso: Curso, inicio: str, etapas: str, apendices: str, descripcion: str) -> str:
     t = _comunes(curso, _plantilla("portada.html"))
+    con_formulas = re.search(r'class="math(?:-display)?"', inicio + etapas + apendices)
+    t = t.replace("{{CABEZA}}", KATEX if con_formulas else "")
     return (t.replace("{{DESCRIPCION}}", descripcion).replace("{{INICIO}}", inicio)
             .replace("{{ETAPAS}}", etapas).replace("{{APENDICES}}", apendices))
 
