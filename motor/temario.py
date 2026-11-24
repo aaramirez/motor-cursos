@@ -8,6 +8,7 @@ Campos de temario.yml:
   slug, nombre, marca, eyebrow, prefijo, descripcion, lede_temario   (obligatorios)
   rotulo_patron     título del cierre de cada capítulo en temario.html («El patrón que nace aquí»)
   rotulo_caso       rótulo de los recuadros :::caso-real (por omisión «Un caso real»)
+  aviso             nota que se muestra arriba en la portada, la tabla de contenido y cada capítulo
   titular, entrada, para_quien, como   la portada, si el curso no tiene inicio.html
   partes: [{numero, nombre, idea?, capitulos: [{slug, corto, titulo, resumen, secciones, labs?, practicas?, patron?}]}]
 """
@@ -157,6 +158,11 @@ def generar(fuente: Path, sitio: Path | None = None) -> int:
                    resumen="Cada capítulo con sus secciones y sus laboratorios.",
                    titulo_pagina=f"Tabla de contenido · {nombre}")
     todas = [tabla] + paginas
+    aviso = f'<p class="aviso-curado" role="note">{e(t["aviso"])}</p>\n' if t.get("aviso") else ""
+    if aviso:
+        for p in todas:
+            if p.contenido:
+                p.contenido = aviso + p.contenido
     partes = [(p["numero"], p["nombre"]) for p in t["partes"]]
     escribir_assets(cfg, *datos_navegacion(todas, [["temario", "Tabla de contenido"]]
                                            + [[k, f"Parte {k} · {nom}"] for k, nom in partes]))
@@ -166,6 +172,7 @@ def generar(fuente: Path, sitio: Path | None = None) -> int:
                       for k, nom in partes)
     ini = fuente / "inicio.html"
     inicio = ini.read_text(encoding="utf-8").rstrip("\n") if ini.exists() else inicio_html(t, len(caps))
+    inicio = aviso + inicio
     sitio.mkdir(parents=True, exist_ok=True)
     portada = portada_html(cfg, inicio, etapas, "", descripcion)
     if portada.count(GTM) < 2:

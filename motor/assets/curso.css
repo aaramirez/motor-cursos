@@ -452,3 +452,6 @@ details.pista,details.solucion{margin-top:-8px}
 .prompt pre{white-space:pre-wrap}
 .indice-enunciados{list-style:none;padding:0;display:grid;gap:4px}
 .indice-enunciados a{text-decoration:none}
+
+/* ---- Aviso del curso (por ejemplo, material en proceso de curado) ---- */
+.aviso-curado{margin:0 0 16px;padding:10px 14px;border:1px solid var(--warm);border-left:4px solid var(--warm);border-radius:8px;background:var(--card);font:500 .92rem var(--f-display);color:var(--ink)}

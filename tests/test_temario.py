@@ -83,3 +83,15 @@ def test_caso_real_con_rotulo_generico(tmp_path):
     generar(fuente, tmp_path / "prueba")
     html = (tmp_path / "prueba" / "01-uno.html").read_text(encoding="utf-8")
     assert "Un caso real" in html and "Así lo hace un operador" not in html
+
+
+def test_aviso_en_portada_temario_y_capitulos(tmp_path):
+    fuente = tmp_path / "prueba-source"
+    (fuente / "capitulos").mkdir(parents=True)
+    t = {**TEMARIO, "aviso": "Material en proceso de curado: puede tener errores."}
+    (fuente / "temario.yml").write_text(yaml.safe_dump(t, allow_unicode=True), encoding="utf-8")
+    (fuente / "capitulos" / "01-uno.md").write_text('---\ntitulo: "Uno"\n---\n\n# Uno\n\n## A\n\nTexto.\n', encoding="utf-8")
+    generar(fuente, tmp_path / "prueba")
+    for archivo in ("index.html", "temario.html", "01-uno.html"):
+        html = (tmp_path / "prueba" / archivo).read_text(encoding="utf-8")
+        assert 'class="aviso-curado"' in html and "proceso de curado" in html, archivo
