@@ -100,3 +100,9 @@ def test_enlace_al_indice_de_todos_los_cursos(tmp_path):
 def test_codigo_en_practicas_corta_la_linea():
     css = (Path(__file__).resolve().parent.parent / "motor" / "assets" / "curso.css").read_text(encoding="utf-8")
     assert ".practica code" in css and ".investiga code" in css
+
+
+def test_lista_numerada_sigue_despues_de_un_bloque():
+    from motor.md import md_a_html
+    html = md_a_html("1. Uno\n2. Dos\n\n```\nls\n```\n\n3. Tres\n4. Cuatro")
+    assert 'start="3"' in html and "counter-reset:st 2" in html

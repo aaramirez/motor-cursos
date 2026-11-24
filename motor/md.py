@@ -163,7 +163,9 @@ def md_a_html(texto: str) -> str:
         elif all(l.startswith("- ") for l in lineas):
             salida.append("<ul>" + "".join(f"<li>{_inline(l[2:])}</li>" for l in lineas) + "</ul>")
         elif all(re.match(r"^\d+\. ", l) for l in lineas):
-            salida.append('<ol class="steps">' + "".join(
+            n0 = int(re.match(r"^(\d+)\.", lineas[0]).group(1))
+            inicio = f' start="{n0}" style="counter-reset:st {n0 - 1}"' if n0 > 1 else ""
+            salida.append(f'<ol class="steps"{inicio}>' + "".join(
                 f"<li><span>{_inline(l.split('. ', 1)[1])}</span></li>" for l in lineas) + "</ol>")
         elif all(l.strip().startswith("|") for l in lineas):
             salida.append(_tabla(lineas))
