@@ -419,6 +419,7 @@ section{grid-template-columns:minmax(0,1fr)}
 .code-copia{position:relative;min-width:0}
 .code-copia pre{max-width:100%;overflow-x:auto;padding-right:84px}
 .code-copia .copiar-todo{position:absolute;top:8px;right:8px}
+@media (max-width:640px){.code-copia .copiar-todo{position:static;display:block;width:fit-content;margin:0 0 6px auto}.code-copia pre{padding-right:12px}}
 
 /* ---- Libros de matemática: fórmulas, enunciados, demostraciones, ejercicios y prompts ---- */
 .math-display{display:block;max-width:100%;overflow-x:auto;overflow-y:hidden;padding:6px 2px;margin:4px 0;text-align:center}
