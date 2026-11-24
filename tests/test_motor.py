@@ -99,7 +99,7 @@ def test_enlace_al_indice_de_todos_los_cursos(tmp_path):
 
 def test_codigo_en_practicas_corta_la_linea():
     css = (Path(__file__).resolve().parent.parent / "motor" / "assets" / "curso.css").read_text(encoding="utf-8")
-    assert ".practica code" in css and ".investiga code" in css
+    assert ".practica code" in css and ".investiga code" in css and ".practica a" in css
 
 
 def test_lista_numerada_sigue_despues_de_un_bloque():
