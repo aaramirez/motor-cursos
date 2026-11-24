@@ -8,7 +8,7 @@ Campos de temario.yml:
   slug, nombre, marca, eyebrow, prefijo, descripcion, lede_temario   (obligatorios)
   rotulo_patron     título del cierre de cada capítulo en temario.html («El patrón que nace aquí»)
   titular, entrada, para_quien, como   la portada, si el curso no tiene inicio.html
-  partes: [{numero, nombre, idea?, capitulos: [{slug, corto, titulo, resumen, secciones, labs?, patron?}]}]
+  partes: [{numero, nombre, idea?, capitulos: [{slug, corto, titulo, resumen, secciones, labs?, practicas?, patron?}]}]
 """
 import json
 from pathlib import Path
@@ -91,6 +91,8 @@ def temario_md(t: dict) -> list[str]:
             lineas += [f"- {s}" for s in c["secciones"]] + [""]
             if c.get("labs"):
                 lineas += ["**Laboratorios**", ""] + [f"- {l}" for l in c["labs"]] + [""]
+            if c.get("practicas"):
+                lineas += ["**Prácticas**", ""] + [f"- {p}" for p in c["practicas"]] + [""]
             if c.get("patron"):
                 lineas += [f"**{t.get('rotulo_patron', 'Lo que te llevas')}:** {c['patron']}", ""]
     return lineas

@@ -14,7 +14,7 @@ TEMARIO = {
     "partes": [
         {"numero": 1, "nombre": "Primera", "idea": "La idea de la parte.", "capitulos": [
             {"slug": "uno", "corto": "Uno", "titulo": "El capítulo uno", "resumen": "Resumen uno.",
-             "secciones": ["Sección A", "Sección B"], "labs": ["Lab A"], "patron": "Patrón A"},
+             "secciones": ["Sección A", "Sección B"], "labs": ["Lab A"], "practicas": ["Práctica A"], "patron": "Patrón A"},
             {"slug": "dos", "corto": "Dos", "titulo": "El capítulo dos", "resumen": "Resumen dos.",
              "secciones": ["Sección C"]}]},
         {"numero": 2, "nombre": "Segunda", "capitulos": [
@@ -40,6 +40,7 @@ def test_temario_md_numera_y_cierra_con_patron():
     assert "### 01. El capítulo uno" in md and "### 03. El capítulo tres" in md
     assert "**El patrón:** Patrón A" in md
     assert "- Lab A" in md
+    assert "**Prácticas**" in md and "- Práctica A" in md
 
 
 def test_inicio_sin_archivo_cuenta_capitulos():
