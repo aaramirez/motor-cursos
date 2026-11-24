@@ -155,10 +155,15 @@ def render_cuerpo(fuentes: Fuentes, lineas: list[str], scripts: list | None = No
                 actual["partes"].append(f'<div class="prose">{html_}</div>')
         texto.clear()
 
-    i = 0
+    i, en_codigo = 0, False
     while i < len(lineas):
         l = lineas[i]
-        if l.startswith("## "):
+        if l.lstrip().startswith(("```", "~~~")):
+            en_codigo = not en_codigo
+            texto.append(l)
+        elif en_codigo:
+            texto.append(l)
+        elif l.startswith("## "):
             volcar()
             secciones.append(actual)
             actual = {"h2": l[3:].strip(), "partes": []}

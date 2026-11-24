@@ -111,3 +111,10 @@ def test_lista_numerada_sigue_despues_de_un_bloque():
 def test_boton_copiar_no_tapa_el_codigo_en_celular():
     css = (Path(__file__).resolve().parent.parent / "motor" / "assets" / "curso.css").read_text(encoding="utf-8")
     assert ".code-copia .copiar-todo{position:static" in css
+
+
+def test_titulo_dentro_de_bloque_de_codigo_no_parte_la_seccion():
+    from motor.bloques import Fuentes, render_cuerpo
+    f = Fuentes(figuras=Path("."), labs=Path("."))
+    html = render_cuerpo(f, ["## Uno", "", "```", "## no es titulo", "texto", "```"])
+    assert html.count("<section>") == 1 and "## no es titulo" in html
