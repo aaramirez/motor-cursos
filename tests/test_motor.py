@@ -118,3 +118,9 @@ def test_titulo_dentro_de_bloque_de_codigo_no_parte_la_seccion():
     f = Fuentes(figuras=Path("."), labs=Path("."))
     html = render_cuerpo(f, ["## Uno", "", "```", "## no es titulo", "texto", "```"])
     assert html.count("<section>") == 1 and "## no es titulo" in html
+
+
+def test_codigo_sin_ligaduras():
+    """La fuente del código no junta «!=» en «≠» ni «<|» en un triángulo: se ve lo que se escribe."""
+    css = (Path(__file__).resolve().parent.parent / "motor" / "assets" / "curso.css").read_text(encoding="utf-8")
+    assert "code,pre,.mono{font-variant-ligatures:none}" in css

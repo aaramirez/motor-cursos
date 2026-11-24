@@ -40,6 +40,7 @@ p{margin:0}
 var,.v{font-family:var(--f-body);font-style:italic}
 .bf{font-weight:700;font-style:normal}
 code,.mono{font-family:var(--f-mono);font-size:.86em}
+code,pre,.mono{font-variant-ligatures:none}
 .hl{background:linear-gradient(transparent 58%,var(--mark) 58%);padding:0 .1em}
 .eyebrow{font-family:var(--f-display);font-weight:600;font-size:.78rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
 
