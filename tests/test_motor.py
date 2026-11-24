@@ -95,3 +95,8 @@ def test_enlace_al_indice_de_todos_los_cursos(tmp_path):
     p = motor.Pagina(slug="a", archivo="a", numero="01", corto="A", titulo="A")
     for html in (motor.pagina_html(cfg, p), motor.portada_html(cfg, "", "", "", "d")):
         assert 'class="al-sitio" href="https://aaramirez.github.io/"' in html and "{{SITIO}}" not in html
+
+
+def test_codigo_en_practicas_corta_la_linea():
+    css = (Path(__file__).resolve().parent.parent / "motor" / "assets" / "curso.css").read_text(encoding="utf-8")
+    assert ".practica code" in css and ".investiga code" in css

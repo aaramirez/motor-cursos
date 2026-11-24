@@ -384,7 +384,7 @@ section{grid-template-columns:minmax(0,1fr)}
 .lab{grid-template-columns:minmax(0,1fr)}
 .lab select{width:100%}
 .lab .opciones label{min-width:0}
-.prose code{overflow-wrap:anywhere}
+.prose code,.practica code,.investiga code,.pruebate code{overflow-wrap:anywhere}
 [hidden]{display:none!important}
 .lab>*{min-width:0}
 .fig .k-warm{fill:var(--warm)} .fig .s-warm{stroke:var(--warm)}
