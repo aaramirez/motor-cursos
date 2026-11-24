@@ -7,6 +7,7 @@ generar(fuente) escribe el sitio: la portada con las partes y los capítulos (lo
 Campos de temario.yml:
   slug, nombre, marca, eyebrow, prefijo, descripcion, lede_temario   (obligatorios)
   rotulo_patron     título del cierre de cada capítulo en temario.html («El patrón que nace aquí»)
+  rotulo_caso       rótulo de los recuadros :::caso-real (por omisión «Un caso real»)
   titular, entrada, para_quien, como   la portada, si el curso no tiene inicio.html
   partes: [{numero, nombre, idea?, capitulos: [{slug, corto, titulo, resumen, secciones, labs?, practicas?, patron?}]}]
 """
@@ -15,7 +16,7 @@ from pathlib import Path
 
 import yaml
 
-from .bloques import Fuentes, render_cuerpo
+from .bloques import Fuentes, Textos, render_cuerpo
 from .matematica import Numeracion, resolver_refs
 from .md import e
 from .sitio import (Curso, Pagina, bloque_etapa, datos_navegacion, escribir, escribir_assets, pagina_html,
@@ -58,6 +59,17 @@ def _ficha(ruta: Path) -> tuple[dict, list[str]]:
         clave, _, valor = linea.partition(": ")
         ficha[clave.strip()] = json.loads(valor)
     return ficha, texto[fin + 5:].splitlines()
+
+
+def _sin_titulo(lineas: list[str]) -> list[str]:
+    """Quita el título # del capítulo, pero no los rótulos «# Windows»… de dentro de los bloques de código."""
+    salida, en_codigo = [], False
+    for l in lineas:
+        if l.lstrip().startswith(("```", "~~~")):
+            en_codigo = not en_codigo
+        if en_codigo or not l.startswith("# "):
+            salida.append(l)
+    return salida
 
 
 def capitulos_de(t: dict) -> list[dict]:
@@ -112,6 +124,8 @@ def generar(fuente: Path, sitio: Path | None = None) -> int:
                 meta_extra='<meta name="claude:viewport-fit-sides" content="cover">',
                 extra_css=css.read_text(encoding="utf-8") if css.exists() else "")
     fuentes = Fuentes(figuras=fuente / "figuras", labs=fuente / "labs")
+    textos = Textos()
+    textos.recuadros["caso-real"] = ("caso", t.get("rotulo_caso", "Un caso real"))
 
     refs, registro, paginas, i = {}, [], [], 0
     for parte in t["partes"]:
@@ -128,8 +142,7 @@ def generar(fuente: Path, sitio: Path | None = None) -> int:
             else:
                 ficha, lineas = _ficha(ruta)
                 num = Numeracion(capitulo=str(i), archivo=f"{archivo}.html", refs=refs, registro=registro)
-                p.contenido = render_cuerpo(fuentes, [l for l in lineas if not l.startswith("# ")], p.scripts,
-                                            num=num)
+                p.contenido = render_cuerpo(fuentes, _sin_titulo(lineas), p.scripts, textos=textos, num=num)
                 p.titulo, p.lede = ficha.get("titulo", c["titulo"]), ficha.get("lede", "")
                 p.titulo_pagina = f"{c['corto']} · {nombre}"
                 p.resumen = ficha.get("resumen", c["resumen"])

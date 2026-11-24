@@ -60,3 +60,37 @@ def test_generar_portada_temario_y_gtm(tmp_path):
     assert "El capítulo tres" in index and 'href="temario.html"' in index
     assert "Sección D" in temario and "Laboratorios" in temario
     assert not (tmp_path / "prueba" / "01-uno.html").exists()
+
+
+def test_capitulo_conserva_rotulos_de_sistema_en_comandos(tmp_path):
+    fuente = tmp_path / "prueba-source"
+    (fuente / "capitulos").mkdir(parents=True)
+    (fuente / "temario.yml").write_text(yaml.safe_dump(TEMARIO, allow_unicode=True), encoding="utf-8")
+    (fuente / "capitulos" / "01-uno.md").write_text(
+        '---\ntitulo: "El capítulo uno"\n---\n\n# El capítulo uno\n\n## Sección A\n\n'
+        "```\n# Windows\nipconfig\n\n# macOS y Linux\nip addr\n```\n", encoding="utf-8")
+    generar(fuente, tmp_path / "prueba")
+    html = (tmp_path / "prueba" / "01-uno.html").read_text(encoding="utf-8")
+    assert 'role="tab"' in html and "macOS y Linux" in html
+
+
+def test_caso_real_con_rotulo_generico(tmp_path):
+    fuente = tmp_path / "prueba-source"
+    (fuente / "capitulos").mkdir(parents=True)
+    (fuente / "temario.yml").write_text(yaml.safe_dump(TEMARIO, allow_unicode=True), encoding="utf-8")
+    (fuente / "capitulos" / "01-uno.md").write_text(
+        '---
+titulo: "Uno"
+---
+
+# Uno
+
+## Sección A
+
+:::caso-real
+Un caso.
+:::
+', encoding="utf-8")
+    generar(fuente, tmp_path / "prueba")
+    html = (tmp_path / "prueba" / "01-uno.html").read_text(encoding="utf-8")
+    assert "Un caso real" in html and "Así lo hace un operador" not in html
