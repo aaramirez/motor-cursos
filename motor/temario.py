@@ -77,12 +77,21 @@ def capitulos_de(t: dict) -> list[dict]:
     return [c for p in t["partes"] for c in p["capitulos"]]
 
 
-def inicio_html(t: dict, n_caps: int) -> str:
+def inicio_html(t: dict, n_caps: int, escritos: int = 0) -> str:
     """Cabecera de la portada a partir del temario (para cursos sin inicio.html)."""
     titular = t.get("titular", t["nombre"])
     entrada = t.get("entrada", t["descripcion"])
-    parrafos = [f'<p><b>Estado.</b> El curso está en preparación. La <a href="temario.html">tabla de contenido</a> '
-                f'ya tiene los {n_caps} capítulos con sus secciones y sus laboratorios, y está en revisión.</p>']
+    tabla = '<a href="temario.html">tabla de contenido</a>'
+    if escritos >= n_caps:
+        estado = (f"Curso completo: los {n_caps} capítulos tienen sus laboratorios, diagramas y prácticas. "
+                  f"Empieza por la {tabla} o por el primer capítulo.")
+    elif escritos:
+        estado = (f"El curso está en preparación: ya están escritos {escritos} de los {n_caps} capítulos. "
+                  f"La {tabla} tiene todos, con sus secciones y sus laboratorios.")
+    else:
+        estado = (f"El curso está en preparación. La {tabla} ya tiene los {n_caps} capítulos con sus secciones "
+                  "y sus laboratorios, y está en revisión.")
+    parrafos = [f"<p><b>Estado.</b> {estado}</p>"]
     if t.get("para_quien"):
         parrafos.append(f"<p><b>Para quién es.</b> {e(t['para_quien'])}</p>")
     if t.get("como"):
@@ -171,7 +180,7 @@ def generar(fuente: Path, sitio: Path | None = None) -> int:
                                    [p for p in paginas if p.etapa == k], abierta=True, cuenta=str(k))
                       for k, nom in partes)
     ini = fuente / "inicio.html"
-    inicio = ini.read_text(encoding="utf-8").rstrip("\n") if ini.exists() else inicio_html(t, len(caps))
+    inicio = ini.read_text(encoding="utf-8").rstrip("\n") if ini.exists() else inicio_html(t, len(caps), sum(not p.en_preparacion for p in paginas))
     inicio = aviso + inicio
     sitio.mkdir(parents=True, exist_ok=True)
     portada = portada_html(cfg, inicio, etapas, "", descripcion)

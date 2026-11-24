@@ -48,6 +48,13 @@ def test_inicio_sin_archivo_cuenta_capitulos():
     assert "los 3 capítulos" in html and "Para todos." in html and 'href="temario.html"' in html
 
 
+def test_inicio_dice_completo_o_avance():
+    completo = inicio_html(TEMARIO, 3, escritos=3)
+    assert "Curso completo" in completo and "en preparación" not in completo
+    avance = inicio_html(TEMARIO, 3, escritos=1)
+    assert "1 de los 3 capítulos" in avance
+
+
 def test_generar_portada_temario_y_gtm(tmp_path):
     fuente = tmp_path / "prueba-source"
     fuente.mkdir()
