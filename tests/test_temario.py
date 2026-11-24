@@ -79,18 +79,7 @@ def test_caso_real_con_rotulo_generico(tmp_path):
     (fuente / "capitulos").mkdir(parents=True)
     (fuente / "temario.yml").write_text(yaml.safe_dump(TEMARIO, allow_unicode=True), encoding="utf-8")
     (fuente / "capitulos" / "01-uno.md").write_text(
-        '---
-titulo: "Uno"
----
-
-# Uno
-
-## Sección A
-
-:::caso-real
-Un caso.
-:::
-', encoding="utf-8")
+        '---\ntitulo: "Uno"\n---\n\n# Uno\n\n## Sección A\n\n:::caso-real\nUn caso.\n:::\n', encoding="utf-8")
     generar(fuente, tmp_path / "prueba")
     html = (tmp_path / "prueba" / "01-uno.html").read_text(encoding="utf-8")
     assert "Un caso real" in html and "Así lo hace un operador" not in html
