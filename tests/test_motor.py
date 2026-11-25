@@ -138,3 +138,17 @@ def test_boton_copiar_va_sobre_el_bloque_en_todo_ancho():
     """El botón «Copiar» de un script largo no tapa la primera línea ni en escritorio."""
     css = (Path(__file__).resolve().parent.parent / "motor" / "assets" / "curso.css").read_text(encoding="utf-8")
     assert "position:absolute;top:8px;right:8px" not in css.split(".code-copia .copiar-todo", 1)[1].split("}", 1)[0]
+
+
+def test_script_largo_con_numeros_de_linea_y_scroll():
+    """Un script sin rótulos de sistema: cada línea numerada, alto de 20 líneas con scroll y botón «Copiar»."""
+    from motor.md import md_a_html
+    codigo = "\n".join(f"x{i} = {i}  # <b>" for i in range(30))
+    html = md_a_html(f"```python\n{codigo}\n```")
+    assert 'class="code-copia code-lineas"' in html
+    assert html.count('<span class="ln">') == 30
+    assert '<span class="ln">x0 = 0  # &lt;b&gt;</span>\n<span class="ln">x1 = 1' in html
+    assert 'class="copiar copiar-todo"' in html
+    css = (Path(__file__).resolve().parent.parent / "motor" / "assets" / "curso.css").read_text(encoding="utf-8")
+    assert ".code-lineas code{" in css and "max-height:30em" in css and "counter-increment:ln" in css
+    assert "user-select:none" in css.split(".code-lineas .ln::before", 1)[1].split("}", 1)[0]

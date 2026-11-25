@@ -421,6 +421,10 @@ section{grid-template-columns:minmax(0,1fr)}
 .code-copia{position:relative;min-width:0}
 .code-copia pre{max-width:100%;overflow-x:auto}
 .code-copia .copiar-todo{position:static;display:block;width:fit-content;margin:0 0 6px auto}
+.code-lineas pre{overflow:hidden}
+.code-lineas code{display:block;max-height:30em;line-height:1.5;overflow:auto;counter-reset:ln;padding:8px 12px 8px 4px;background:var(--card);border:1px solid var(--line);border-radius:6px}
+.code-lineas .ln{counter-increment:ln}
+.code-lineas .ln::before{content:counter(ln);display:inline-block;width:3ch;margin-right:1.5ch;text-align:right;color:var(--muted);opacity:.7;user-select:none;-webkit-user-select:none}
 
 /* ---- Libros de matemática: fórmulas, enunciados, demostraciones, ejercicios y prompts ---- */
 .math-display{display:block;max-width:100%;overflow-x:auto;overflow-y:hidden;padding:6px 2px;margin:4px 0;text-align:center}

@@ -110,7 +110,8 @@ def _bloque_codigo(codigo: str, info: str = "") -> str:
     orden = {"Windows": 0, "macOS": 1, "Linux": 2}
     grupos = dict(sorted(grupos.items(), key=lambda kv: orden[sistemas(kv[0])[0]]))
     if not grupos:
-        return (f'<div class="code-copia"><pre><code>{e(codigo, quote=False)}</code></pre>'
+        lineas = "\n".join(f'<span class="ln">{e(l, quote=False)}</span>' for l in codigo.split("\n"))
+        return (f'<div class="code-copia code-lineas"><pre><code>{lineas}</code></pre>'
                 '<button type="button" class="copiar copiar-todo">Copiar</button></div>')
 
     def panel(rotulo, g, so):
