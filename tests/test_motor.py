@@ -132,3 +132,9 @@ def test_enlace_automatico_y_cita():
     assert '<a href="https://example.com/a?b=1&amp;c=2" target="_blank" rel="noopener">https://example.com/a?b=1&amp;c=2</a>' in html
     cita = md_a_html("> Una frase citada\n> en dos líneas, con **énfasis**.")
     assert cita == "<blockquote><p>Una frase citada en dos líneas, con <b>énfasis</b>.</p></blockquote>"
+
+
+def test_boton_copiar_va_sobre_el_bloque_en_todo_ancho():
+    """El botón «Copiar» de un script largo no tapa la primera línea ni en escritorio."""
+    css = (Path(__file__).resolve().parent.parent / "motor" / "assets" / "curso.css").read_text(encoding="utf-8")
+    assert "position:absolute;top:8px;right:8px" not in css.split(".code-copia .copiar-todo", 1)[1].split("}", 1)[0]
