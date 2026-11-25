@@ -110,9 +110,12 @@ def _bloque_codigo(codigo: str, info: str = "") -> str:
     orden = {"Windows": 0, "macOS": 1, "Linux": 2}
     grupos = dict(sorted(grupos.items(), key=lambda kv: orden[sistemas(kv[0])[0]]))
     if not grupos:
-        lineas = "\n".join(f'<span class="ln">{e(l, quote=False)}</span>' for l in codigo.split("\n"))
-        return (f'<div class="code-copia code-lineas"><pre><code>{lineas}</code></pre>'
-                '<button type="button" class="copiar copiar-todo">Copiar</button></div>')
+        filas = codigo.split("\n")
+        lineas = "\n".join(f'<span class="ln">{e(l, quote=False)}</span>' for l in filas)
+        ver = (f'<button type="button" class="ver-todo" aria-expanded="false">Ver las {len(filas)} líneas</button>'
+               if len(filas) > 20 else "")
+        return (f'<div class="code-copia code-lineas"><pre tabindex="0"><code>{lineas}</code></pre>'
+                f'{ver}<button type="button" class="copiar copiar-todo">Copiar</button></div>')
 
     def panel(rotulo, g, so):
         notas = g["notas"] or ([rotulo] if len(grupos) == 1 and not g.get("sin_nota") else [])

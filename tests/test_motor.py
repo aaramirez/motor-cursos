@@ -150,5 +150,11 @@ def test_script_largo_con_numeros_de_linea_y_scroll():
     assert '<span class="ln">x0 = 0  # &lt;b&gt;</span>\n<span class="ln">x1 = 1' in html
     assert 'class="copiar copiar-todo"' in html
     css = (Path(__file__).resolve().parent.parent / "motor" / "assets" / "curso.css").read_text(encoding="utf-8")
-    assert ".code-lineas code{" in css and "max-height:30em" in css and "counter-increment:ln" in css
+    assert 'class="ver-todo"' in html and 'aria-expanded="false"' in html
+    assert ".code-lineas pre{" in css and "overflow-y:auto" in css.split(".code-lineas pre{", 1)[1].split("}", 1)[0]
+    assert "counter-increment:ln" in css and ".code-lineas.abierto pre{max-height:none" in css
+    js = (Path(__file__).resolve().parent.parent / "motor" / "assets" / "lab.js").read_text(encoding="utf-8")
+    assert ".ver-todo" in js
+    corto = md_a_html("```python\nx = 1\n```")
+    assert "ver-todo" not in corto
     assert "user-select:none" in css.split(".code-lineas .ln::before", 1)[1].split("}", 1)[0]
