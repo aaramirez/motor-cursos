@@ -51,6 +51,7 @@ def _inline(texto: str, enlaces: bool = True) -> str:
     t = re.sub(r"\[([^\]]+)\]\(([^)\s]+)\)",
                lambda m: f'<a href="{m.group(2)}" target="_blank" rel="noopener">{m.group(1)}</a>'
                if m.group(2).startswith("http") else f'<a href="{m.group(2)}">{m.group(1)}</a>', t)
+    t = re.sub(r"&lt;(https?://\S+?)&gt;", r'<a href="\1" target="_blank" rel="noopener">\1</a>', t)
     t = "".join(p if p.startswith("<a ") else _rfc(p) for p in re.split(r"(<a .*?</a>)", t))
     t = re.sub(r"\*\*(.+?)\*\*", r"<b>\1</b>", t)
     t = re.sub(r"(?<![\*\w])\*(?!\s)(.+?)(?<!\s)\*(?![\*\w])", r"<i>\1</i>", t)
@@ -167,6 +168,8 @@ def md_a_html(texto: str) -> str:
             inicio = f' start="{n0}" style="counter-reset:st {n0 - 1}"' if n0 > 1 else ""
             salida.append(f'<ol class="steps"{inicio}>' + "".join(
                 f"<li><span>{_inline(l.split('. ', 1)[1])}</span></li>" for l in lineas) + "</ol>")
+        elif all(l.startswith(">") for l in lineas):
+            salida.append(f"<blockquote><p>{_inline(' '.join(l[1:].strip() for l in lineas))}</p></blockquote>")
         elif all(l.strip().startswith("|") for l in lineas):
             salida.append(_tabla(lineas))
         elif lineas[0].startswith("### "):

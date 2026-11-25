@@ -124,3 +124,11 @@ def test_codigo_sin_ligaduras():
     """La fuente del código no junta «!=» en «≠» ni «<|» en un triángulo: se ve lo que se escribe."""
     css = (Path(__file__).resolve().parent.parent / "motor" / "assets" / "curso.css").read_text(encoding="utf-8")
     assert "code,pre,.mono{font-variant-ligatures:none}" in css
+
+
+def test_enlace_automatico_y_cita():
+    from motor.md import md_a_html
+    html = md_a_html("Ver <https://example.com/a?b=1&c=2> ahora.")
+    assert '<a href="https://example.com/a?b=1&amp;c=2" target="_blank" rel="noopener">https://example.com/a?b=1&amp;c=2</a>' in html
+    cita = md_a_html("> Una frase citada\n> en dos líneas, con **énfasis**.")
+    assert cita == "<blockquote><p>Una frase citada en dos líneas, con <b>énfasis</b>.</p></blockquote>"
