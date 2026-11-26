@@ -124,6 +124,18 @@ def test_codigo_sin_ligaduras():
     """La fuente del código no junta «!=» en «≠» ni «<|» en un triángulo: se ve lo que se escribe."""
     css = (Path(__file__).resolve().parent.parent / "motor" / "assets" / "curso.css").read_text(encoding="utf-8")
     assert "code,pre,.mono{font-variant-ligatures:none}" in css
+    # Las reglas que usan el atajo «font:» reinician las ligaduras: hay que apagarlas otra vez.
+    assert ".fig .t-mono{font-family:var(--f-mono);font-variant-ligatures:none}" in css
+    regla_cmd = css[css.index(".cmd-c{"):].split("}", 1)[0]
+    assert "font-variant-ligatures:none" in regla_cmd
+
+
+def test_codigo_largo_en_recuadros_corta_la_linea():
+    """Un código largo dentro de «Imagínalo así», «Un caso real» o «En la práctica» no desborda el celular."""
+    css = (Path(__file__).resolve().parent.parent / "motor" / "assets" / "curso.css").read_text(encoding="utf-8")
+    regla = next(l for l in css.splitlines() if l.startswith(".prose code,") and "overflow-wrap:anywhere" in l)
+    for sel in (".analogia code", ".caso code", ".ml code"):
+        assert sel in regla
 
 
 def test_enlace_automatico_y_cita():
