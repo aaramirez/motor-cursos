@@ -1,6 +1,7 @@
 """Páginas, portada, navegación y archivos compartidos (style.css y lab.js) de un curso."""
 import json
 import re
+from datetime import date
 from dataclasses import dataclass, field
 from pathlib import Path
 
@@ -20,6 +21,23 @@ KATEX = (f'<link rel="stylesheet" href="{_KATEX}katex.min.css" '
          'crossorigin="anonymous" referrerpolicy="no-referrer"></script>\n')
 
 
+LINKEDIN = "https://www.linkedin.com/in/alexander-ramirez-morales/"
+LICENCIA = "https://creativecommons.org/licenses/by-sa/4.0/deed.es"
+
+
+def pie_comun(anio: int | None = None) -> str:
+    """El pie de todas las páginas. El año final se actualiza solo en el navegador; `anio` es el que queda sin JavaScript."""
+    def a(url: str, texto: str) -> str:
+        return f'<a href="{url}" target="_blank" rel="noopener">{texto}</a>'
+    return (f"<span>Generado, editado y curado por {a(LINKEDIN, 'Alexander A. Ramírez M.')}.</span>"
+            f"<span>El contenido se comparte bajo la licencia "
+            f"{a(LICENCIA, 'CC BY-SA 4.0, Atribución/Reconocimiento-CompartirIgual 4.0 Internacional')}.</span>"
+            f"<span>© 2002–<span data-anio>{anio or date.today().year}</span> Alexander A. Ramírez M. · "
+            f"{a(LINKEDIN, 'LinkedIn')} · {a('https://github.com/aaramirez', 'GitHub')}</span>"
+            "<script>document.querySelectorAll('[data-anio]').forEach(function (e) "
+            "{ e.textContent = new Date().getFullYear(); });</script>")
+
+
 @dataclass
 class Curso:
     """Lo que identifica a un curso en sus páginas."""
@@ -27,12 +45,12 @@ class Curso:
     nombre: str                   # «Cómo funciona un telco»: va en el <title>
     marca: str                    # HTML del enlace de la barra superior
     eyebrow: str                  # texto pequeño a la derecha de la marca
-    pie: str                      # HTML dentro de <footer>
     prefijo: str                  # prefijo de las claves de avance en localStorage («telco-»)
     aria_pager: str = "Capítulo anterior y siguiente"
     meta_extra: str = ""          # etiquetas <meta> adicionales
     extra_css: str = ""           # estilos propios del curso: se agregan al final de style.css
     sitio: str = "https://aaramirez.github.io/"  # índice de todos los cursos (enlace de la barra superior)
+    pie: str = ""                 # ya no se usa: todas las páginas llevan pie_comun()
 
 
 @dataclass
@@ -63,7 +81,7 @@ def _plantilla(nombre: str) -> str:
 
 def _comunes(curso: Curso, t: str) -> str:
     return (t.replace("{{NOMBRE}}", curso.nombre).replace("{{MARCA}}", curso.marca)
-            .replace("{{EYEBROW}}", curso.eyebrow).replace("{{PIE}}", curso.pie)
+            .replace("{{EYEBROW}}", curso.eyebrow).replace("{{PIE}}", pie_comun())
             .replace("{{ARIA_PAGER}}", curso.aria_pager).replace("{{SITIO}}", curso.sitio)
             .replace("{{META_EXTRA}}", curso.meta_extra + "\n" if curso.meta_extra else ""))
 

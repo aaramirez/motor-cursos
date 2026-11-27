@@ -11,5 +11,5 @@ from .md import COPIAR, _bloque_codigo, _inline, _rfc, _tabla, e, md_a_html  # n
 from .matematica import ENUNCIADOS, Numeracion, indice_enunciados, numerar, resolver_refs  # noqa: F401
 from .bloques import (Fuentes, Textos, cuerpo, directiva, render_cuerpo, separar_scripts,  # noqa: F401
                       sin_prologo)
-from .sitio import (Curso, Pagina, bloque_etapa, cabecera, datos_navegacion, escribir,  # noqa: F401
+from .sitio import (Curso, pie_comun, Pagina, bloque_etapa, cabecera, datos_navegacion, escribir,  # noqa: F401
                     escribir_assets, pagina_html, portada_html, tarjeta)

@@ -35,7 +35,7 @@ def test_pagina_con_la_identidad_del_curso_y_gtm(tmp_path):
     assert "<title>Uno · Curso X</title>\n<meta name=\"m\" content=\"1\">\n<meta name=\"description\"" in html
     assert '<a class="brand" href="index.html">Curso <b>X</b></a><span class="eyebrow">Ojo</span>' in html
     assert '<header class="page-head"><span class="num">MÓDULO 01 DE 2</span><h1>Uno largo</h1></header>' in html
-    assert 'id="got"' in html and "<footer><span>Pie</span></footer>" in html
+    assert 'id="got"' in html and "<footer>" + motor.pie_comun() + "</footer>" in html and "<span>Pie</span>" not in html
     assert html.index('src="assets/lab.js"') < html.index("<script>a()</script>")
     assert "GTM-KX76XF8R" in html.split("</head>")[0] and "ns.html?id=GTM-KX76XF8R" in html
 
@@ -170,3 +170,13 @@ def test_script_largo_con_numeros_de_linea_y_scroll():
     corto = md_a_html("```python\nx = 1\n```")
     assert "ver-todo" not in corto
     assert "user-select:none" in css.split(".code-lineas .ln::before", 1)[1].split("}", 1)[0]
+
+
+def test_pie_comun_de_todas_las_paginas():
+    pie = motor.pie_comun(2030)
+    assert 'Generado, editado y curado por <a href="https://www.linkedin.com/in/alexander-ramirez-morales/"' in pie
+    assert 'href="https://creativecommons.org/licenses/by-sa/4.0/deed.es"' in pie
+    assert "CC BY-SA 4.0, Atribución/Reconocimiento-CompartirIgual 4.0 Internacional" in pie
+    assert "© 2002–<span data-anio>2030</span> Alexander A. Ramírez M." in pie
+    assert 'href="https://github.com/aaramirez"' in pie and "new Date().getFullYear()" in pie
+    assert "Código del sitio" not in pie and "Sitio publicado" not in pie

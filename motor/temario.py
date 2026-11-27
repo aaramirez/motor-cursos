@@ -127,10 +127,7 @@ def generar(fuente: Path, sitio: Path | None = None) -> int:
     sitio = Path(sitio) if sitio else fuente.parent / t["slug"]
     nombre, descripcion, caps = t["nombre"], t["descripcion"], capitulos_de(t)
     css = fuente / "curso.css"
-    pie = (f'<span>Curso abierto de aaramirez.github.io.</span><span>Sitio publicado: '
-           f'<a href="https://github.com/aaramirez/{t["slug"]}" target="_blank" rel="noopener">'
-           f'github.com/aaramirez/{t["slug"]}</a></span>')
-    cfg = Curso(salida=sitio, nombre=nombre, marca=t["marca"], eyebrow=t["eyebrow"], pie=pie, prefijo=t["prefijo"],
+    cfg = Curso(salida=sitio, nombre=nombre, marca=t["marca"], eyebrow=t["eyebrow"], prefijo=t["prefijo"],
                 meta_extra='<meta name="claude:viewport-fit-sides" content="cover">',
                 extra_css=css.read_text(encoding="utf-8") if css.exists() else "")
     fuentes = Fuentes(figuras=fuente / "figuras", labs=fuente / "labs")
