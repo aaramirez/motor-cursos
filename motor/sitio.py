@@ -29,7 +29,7 @@ def pie_comun(anio: int | None = None) -> str:
     """El pie de todas las páginas. El año final se actualiza solo en el navegador; `anio` es el que queda sin JavaScript."""
     def a(url: str, texto: str) -> str:
         return f'<a href="{url}" target="_blank" rel="noopener">{texto}</a>'
-    return (f"<span>Generado, editado y curado por {a(LINKEDIN, 'Alexander A. Ramírez M.')}.</span>"
+    return (f"<span>Generado, editado y curado por {a(LINKEDIN, 'Alexander A. Ramírez M.')}</span>"
             f"<span>El contenido se comparte bajo la licencia "
             f"{a(LICENCIA, 'CC BY-SA 4.0, Atribución/Reconocimiento-CompartirIgual 4.0 Internacional')}.</span>"
             f"<span>© 2002–<span data-anio>{anio or date.today().year}</span> Alexander A. Ramírez M. · "

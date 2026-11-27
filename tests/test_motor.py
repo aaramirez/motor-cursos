@@ -179,4 +179,4 @@ def test_pie_comun_de_todas_las_paginas():
     assert "CC BY-SA 4.0, Atribución/Reconocimiento-CompartirIgual 4.0 Internacional" in pie
     assert "© 2002–<span data-anio>2030</span> Alexander A. Ramírez M." in pie
     assert 'href="https://github.com/aaramirez"' in pie and "new Date().getFullYear()" in pie
-    assert "Código del sitio" not in pie and "Sitio publicado" not in pie
+    assert "Ramírez M.</a>.</span>" not in pie and "Código del sitio" not in pie and "Sitio publicado" not in pie
